@@ -1,12 +1,12 @@
 Summary:	An anonymous distributed secure network
 Summary(pl):	Anonimowa, rozproszona, bezpieczna sieæ
 Name:		GNUnet
-Version:	0.5.4a
+Version:	0.6.1d
 Release:	0.1
 Group:		Applications/Networking
 License:	GPL
-Source0:	http://www.ovmj.org/GNUnet/download/%{name}-%{version}.tar.gz
-# Source0-md5:	0a22cadab0b33784d0d5344ce975a088
+Source0:	http://www.ovmj.org/GNUnet/download/%{name}-%{version}.tar.bz2
+# Source0-md5:	37fd82efbe474247df3df400315e64d6
 Source1:	gnunet.init
 Patch0:		%{name}-nolibs.patch
 URL:		http://www.gnu.org/software/GNUnet/
@@ -15,7 +15,7 @@ BuildRequires:	automake
 BuildRequires:	db-devel
 BuildRequires:	gdbm-devel
 BuildRequires:	gtk+-devel >= 1.2
-BuildRequires:	libextractor-devel >= 0.2.3
+BuildRequires:	libextractor-devel >= 0.2.6
 BuildRequires:	libltdl-devel
 BuildRequires:	libtool >= 1:1.4.2-9
 BuildRequires:	mysql-devel >= 3.23.56
@@ -175,16 +175,15 @@ rm -rf $RPM_BUILD_ROOT
 %{__make} install \
 	DESTDIR=$RPM_BUILD_ROOT
 
-install -D contrib/gnunet.conf.root $RPM_BUILD_ROOT%{_sysconfdir}/gnunet.conf
-install -d $RPM_BUILD_ROOT%{_sysconfdir}/skel/.gnunet
-install contrib/gnunet.conf $RPM_BUILD_ROOT%{_sysconfdir}/skel/.gnunet
-install -D %{SOURCE1} $RPM_BUILD_ROOT/etc/rc.d/init.d/gnunet
-install -d $RPM_BUILD_ROOT%{_gnunethomedir}/data/hosts
-install -d $RPM_BUILD_ROOT%{_gnunethomedir}/afs
+install -d $RPM_BUILD_ROOT/etc/{skel/.gnunet,/rc.d/init.d} \
+	$RPM_BUILD_ROOT%{_gnunethomedir}/{state.sdb,data/{afs,credit,hosts}}
+
+install contrib/gnunet.root $RPM_BUILD_ROOT%{_sysconfdir}/gnunet.conf
+install contrib/gnunet.user $RPM_BUILD_ROOT%{_sysconfdir}/skel/.gnunet/gnunet.conf
+install %{SOURCE1} $RPM_BUILD_ROOT/etc/rc.d/init.d/gnunet
 
 # these are normal, dynamically linked libraries - there is no -devel, so *.la not needed
-rm -f $RPM_BUILD_ROOT%{_libdir}/libgnunetafs_{blocks,database,decoding,delete,encoding,policy,search,util}.la \
-	$RPM_BUILD_ROOT%{_libdir}/libgnunet{common,util}.la
+rm -f $RPM_BUILD_ROOT%{_libdir}/{libgnunetutil,libgnunet_afs_esed2}.la
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -238,7 +237,6 @@ fi
 %attr(755,root,root) %{_bindir}/gnunet-insert
 %attr(755,root,root) %{_bindir}/gnunet-search
 %attr(755,root,root) %{_bindir}/gnunet-download
-%attr(755,root,root) %{_bindir}/gnunet-insert-multi
 %attr(755,root,root) %{_bindir}/gnunet-gtk
 %attr(755,root,root) %{_bindir}/gnunet-chat
 %attr(755,root,root) %{_bindir}/gnunet-delete
@@ -249,41 +247,39 @@ fi
 %attr(755,root,root) %{_bindir}/gnunet-tbench
 %attr(755,root,root) %{_bindir}/gnunet-peer-info
 %attr(755,root,root) %{_bindir}/gnunet-tracekit
+%attr(755,root,root) %{_bindir}/gnunet-directory
+%attr(755,root,root) %{_bindir}/gnunet-pseudonym
+%attr(755,root,root) %{_bindir}/gnunet-setup
+%attr(755,root,root) %{_bindir}/gnunet-testbed
 
 # normal, dynamically linked libraries
-%attr(755,root,root) %{_libdir}/libgnunetafs_blocks.so.0.0.0
-%attr(755,root,root) %{_libdir}/libgnunetafs_database.so.0.0.0
-%attr(755,root,root) %{_libdir}/libgnunetafs_decoding.so.0.0.0
-%attr(755,root,root) %{_libdir}/libgnunetafs_delete.so.0.0.0
-%attr(755,root,root) %{_libdir}/libgnunetafs_encoding.so.0.0.0
-%attr(755,root,root) %{_libdir}/libgnunetafs_policy.so.0.0.0
-%attr(755,root,root) %{_libdir}/libgnunetafs_search.so.0.0.0
-%attr(755,root,root) %{_libdir}/libgnunetafs_util.so.0.0.0
-%attr(755,root,root) %{_libdir}/libgnunetcommon.so.0.0.0
 %attr(755,root,root) %{_libdir}/libgnunetutil.so.0.0.0
+%attr(755,root,root) %{_libdir}/libgnunet_afs_esed2.so.0.0.0
 
 # ltdlopened plugins - these must have *.la
-%attr(755,root,root) %{_libdir}/libextractor_lower.so.0.0.0
-%{_libdir}/libextractor_lower.la
-%attr(755,root,root) %{_libdir}/libgnunetafs_database_directory.so.0.0.0
+%attr(755,root,root) %{_libdir}/libgnunetafs_database_directory.so
 %{_libdir}/libgnunetafs_database_directory.la
-%attr(755,root,root) %{_libdir}/libgnunetafs_protocol.so.0.0.0
+%attr(755,root,root) %{_libdir}/libgnunetafs_protocol.so
 %{_libdir}/libgnunetafs_protocol.la
-%attr(755,root,root) %{_libdir}/libgnunetchat_protocol.so.0.0.0
+%attr(755,root,root) %{_libdir}/libgnunettestbed_protocol.so
+%{_libdir}/libgnunettestbed_protocol.la
+%attr(755,root,root) %{_libdir}/libgnunettransport_nat.so
+%{_libdir}/libgnunettransport_nat.la
+%attr(755,root,root) %{_libdir}/libgnunetchat_protocol.so
 %{_libdir}/libgnunetchat_protocol.la
-%attr(755,root,root) %{_libdir}/libgnunettbench_protocol.so.0.0.0
+%attr(755,root,root) %{_libdir}/libgnunettbench_protocol.so
 %{_libdir}/libgnunettbench_protocol.la
-%attr(755,root,root) %{_libdir}/libgnunettracekit_protocol.so.0.0.0
+%attr(755,root,root) %{_libdir}/libgnunettracekit_protocol.so
 %{_libdir}/libgnunettracekit_protocol.la
-%attr(755,root,root) %{_libdir}/libgnunettransport_smtp.so.0.0.0
+%attr(755,root,root) %{_libdir}/libgnunettransport_smtp.so
 %{_libdir}/libgnunettransport_smtp.la
-%attr(755,root,root) %{_libdir}/libgnunettransport_http.so.0.0.0
+%attr(755,root,root) %{_libdir}/libgnunettransport_http.so
 %{_libdir}/libgnunettransport_http.la
-%attr(755,root,root) %{_libdir}/libgnunettransport_tcp.so.0.0.0
+%attr(755,root,root) %{_libdir}/libgnunettransport_tcp.so
 %{_libdir}/libgnunettransport_tcp.la
 #%attr(755,root,root) %{_libdir}/libgnunettransport_tcp6.so.0.0.0
 #%{_libdir}/libgnunettransport_tcp6.la
-%attr(755,root,root) %{_libdir}/libgnunettransport_udp.so.0.0.0
+%attr(755,root,root) %{_libdir}/libgnunettransport_udp.so
 %{_libdir}/libgnunettransport_udp.la
 #%attr(755,root,root) %{_libdir}/libgnunettransport_udp6.so.0.0.0
 #%{_libdir}/libgnunettransport_udp6.la
@@ -294,7 +290,6 @@ fi
 %{_mandir}/man1/gnunetd.1*
 %{_mandir}/man1/gnunet-convert.1*
 %{_mandir}/man1/gnunet-gtk.1*
-%{_mandir}/man1/gnunet-insert-multi.1*
 %{_mandir}/man1/gnunet-download.1*
 %{_mandir}/man1/gnunet-delete.1*
 %{_mandir}/man1/gnunet-insert.1*
@@ -302,44 +297,41 @@ fi
 %{_mandir}/man1/gnunet-check.1*
 %{_mandir}/man1/gnunet-transport-check.1*
 %{_mandir}/man1/gnunet-chat.1*
-%{_mandir}/man5/gnunet.conf.5*
 %{_mandir}/man1/gnunet-tbench.1*
 %{_mandir}/man1/gnunet-tracekit.1*
 %{_mandir}/man1/gnunet-stats.1*
 %{_mandir}/man1/gnunet-peer-info.1*
+%{_mandir}/man1/gnunet-directory.1*
+%{_mandir}/man1/gnunet-pseudonym.1*
+%{_mandir}/man1/gnunet-testbed.1*
+%{_mandir}/man5/gnunet.conf.5*
 %attr(2770,gnunet,gnunet) %dir %{_gnunethomedir}
-%attr(2770,gnunet,gnunet) %dir %{_gnunethomedir}/afs
 %attr(2770,gnunet,gnunet) %dir %{_gnunethomedir}/data
+%attr(2770,gnunet,gnunet) %dir %{_gnunethomedir}/data/afs
+%attr(2770,gnunet,gnunet) %dir %{_gnunethomedir}/data/credit
 %attr(2770,gnunet,gnunet) %dir %{_gnunethomedir}/data/hosts
+%attr(2770,gnunet,gnunet) %dir %{_gnunethomedir}/state.sdb
 
 # these (and *.so for them) should be in -devel or /dev/null
-#%{_libdir}/libgnunetafs_blocks.la
-#%{_libdir}/libgnunetafs_database.la
-#%{_libdir}/libgnunetafs_decoding.la
-#%{_libdir}/libgnunetafs_delete.la
-#%{_libdir}/libgnunetafs_encoding.la
-#%{_libdir}/libgnunetafs_policy.la
-#%{_libdir}/libgnunetafs_search.la
-#%{_libdir}/libgnunetafs_util.la
-#%{_libdir}/libgnunetcommon.la
 #%{_libdir}/libgnunetutil.la
+#%{_libdir}/libgnunet_afs_esed2.la
 
 %files bdb
 %defattr(644,root,root,755)
-%attr(755,root,root) %{_libdir}/libgnunetafs_database_bdb.so.0.0.0
+%attr(755,root,root) %{_libdir}/libgnunetafs_database_bdb.so
 %{_libdir}/libgnunetafs_database_bdb.la
 
 %files gdbm
 %defattr(644,root,root,755)
-%attr(755,root,root) %{_libdir}/libgnunetafs_database_gdbm.so.0.0.0
+%attr(755,root,root) %{_libdir}/libgnunetafs_database_gdbm.so
 %{_libdir}/libgnunetafs_database_gdbm.la
 
 %files mysql
 %defattr(644,root,root,755)
-%attr(755,root,root) %{_libdir}/libgnunetafs_database_mysql.so.0.0.0
+%attr(755,root,root) %{_libdir}/libgnunetafs_database_mysql.so
 %{_libdir}/libgnunetafs_database_mysql.la
 
 %files tdb
 %defattr(644,root,root,755)
-%attr(755,root,root) %{_libdir}/libgnunetafs_database_tdb.so.0.0.0
+%attr(755,root,root) %{_libdir}/libgnunetafs_database_tdb.so
 %{_libdir}/libgnunetafs_database_tdb.la
