@@ -84,7 +84,7 @@ czyni system nagród trudnym do przechytrzenia.
 GNUnet wspiera wiele protoko³ów transportowych, aktualnie: UDP, TCP i
 SMTP. Szkielet automatycznie wybiera tani± metodê transportu dostêpn±
 w danej chwili dla obu u¿ytkowników przy dowolnym po³±czeniu. GNUnet
-mo¿e dzia³aæ pomiêdzy dwoma maszynami znajduj±cymi siê za NAT i z
+mo¿e dzia³aæ pomiêdzy dwiema maszynami znajduj±cymi siê za NAT i z
 prawie wszystkimi konfiguracjami firewalli.
 
 Jest to wersja beta. Najwa¿niejsze funkcje zosta³y zaimplementowane i
