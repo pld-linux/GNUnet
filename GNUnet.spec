@@ -65,8 +65,8 @@ For a more detailed description of GNUnet, see our webpages at:
 
 http://www.gnu.org/software/GNUnet/ and http://www.ovmj.org/GNUnet/
 
-Note that this RPM does not build the database frontends for tdb and
-mysql (only gdbm, bdb and plain directories are included).
+Note that this RPM contains only plain directories database frontend;
+bdb, gdbm, mysql and tdb frontends are in separate subpackages.
 
 %description -l pl
 GNUnet stanowi szkielet bezpiecznej sieci typu peer-to-peer.
@@ -96,8 +96,9 @@ Bardziej szczegó³owy opis GNUnet mo¿na znale¼æ na stronie:
 
 http://www.gnu.org/software/GNUnet/ and http://www.ovmj.org/GNUnet/
 
-Nale¿y te¿ zauwa¿yæ, ¿e ten pakiet nie wspiera interfejsu bazodanowego
-dla tdb i mysql (a jedynie dla gdbm, bdb i katalogów).
+Nale¿y te¿ zauwa¿yæ, ¿e ten pakiet zawiera tylko interfejs bazodanowy
+dla zwyk³ych katalogów; wtyczki obs³uguj±ce bazy bdb, gdbm, mysql i
+tdb znajduj± siê w osobnych podpakietach.
 
 %package bdb
 Summary:	BerkeleyDB database support for GNUnet
