@@ -1,0 +1,13 @@
+--- GNUnet-0.5.4a/configure.ac.orig	Fri Jun 27 02:56:47 2003
++++ GNUnet-0.5.4a/configure.ac	Mon Aug 11 12:38:38 2003
+@@ -316,8 +316,8 @@
+ 
+ # some other checks for standard libs
+ 
+-AC_CHECK_LIB(nsl, gethostbyname)
+-AC_CHECK_LIB(socket, socket)
++AC_SEARCH_LIBS(gethostbyname, nsl)
++AC_SEARCH_LIBS(socket, socket)
+ AC_CHECK_LIB(m, log)
+ 
+ # do gpg/libgcrypt/mpi checks only if we
