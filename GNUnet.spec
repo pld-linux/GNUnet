@@ -21,7 +21,7 @@ BuildRequires:	db-devel
 BuildRequires:	gdbm-devel
 BuildRequires:	gettext-devel
 BuildRequires:	gmp-devel >= 4.0.0
-BuildRequires:	gtk+2-devel >= 2.4
+BuildRequires:	gtk+2-devel >= 2:2.4
 BuildRequires:	libextractor-devel >= 0.3.10
 BuildRequires:	libltdl-devel
 BuildRequires:	libtool >= 1:1.4.2-9
