@@ -20,6 +20,7 @@ BuildRequires:	automake
 BuildRequires:	db-devel
 BuildRequires:	gdbm-devel
 BuildRequires:	gettext-devel
+BuildRequires:	gmp-devel >= 4.0.0
 BuildRequires:	gtk+2-devel >= 2.4
 BuildRequires:	libextractor-devel >= 0.3.10
 BuildRequires:	libltdl-devel
@@ -166,7 +167,7 @@ Pakiet ten zawiera interfejs bazy danych TDB dla GNUnet.
 %build
 %{__gettextize}
 %{__libtoolize} --ltdl
-%{__aclocal}
+%{__aclocal} -I m4
 %{__autoconf}
 %{__autoheader}
 %{__automake}
