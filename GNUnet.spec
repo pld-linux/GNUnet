@@ -1,30 +1,31 @@
-Name:			GNUnet
-Release:		0.1
-Summary:		An anonymous distributed secure network
-Summary(pl):		Anonimowa, rozproszona, bezpieczna sieæ
-License:		GPL
-URL:			http://www.gnu.org/software/GNUnet/
-Version:		0.5.4a
-Source0:		http://www.ovmj.org/GNUnet/download/%{name}-%{version}.tar.gz
-Source1:		gnunet.init
-# Source0-md5:		0a22cadab0b33784d0d5344ce975a088
-Group:			Applications/Networking
-Requires:		gtk+ >= 1.2
-Requires:		libextractor >= 0.2.3
-Requires:		openssl >= 0.9.5
-Requires:		gdbm
-Requires(pre):		/usr/bin/getgid
-Requires(pre):		/bin/id
-Requires(pre):		/usr/sbin/groupadd
-Requires(pre):		/usr/sbin/useradd
+Name:		GNUnet
+Summary:	An anonymous distributed secure network
+Summary(pl):	Anonimowa, rozproszona, bezpieczna sieæ
+Version:	0.5.4a
+Release:	0.1
+Group:		Applications/Networking
+License:	GPL
+Source0:	http://www.ovmj.org/GNUnet/download/%{name}-%{version}.tar.gz
+# Source0-md5:	0a22cadab0b33784d0d5344ce975a088
+Source1:	gnunet.init
+URL:		http://www.gnu.org/software/GNUnet/
+Requires:	gtk+ >= 1.2
+Requires:	libextractor >= 0.2.3
+Requires:	openssl >= 0.9.5
+Requires:	gdbm
+Requires(pre):	/usr/bin/getgid
+Requires(pre):	/bin/id
+Requires(pre):	/usr/sbin/groupadd
+Requires(pre):	/usr/sbin/useradd
 Requires(postun):	/usr/sbin/userdel
 Requires(postun):	/usr/sbin/groupdel
 Requires(post,preun):	/sbin/chkconfig
-BuildRequires:		gtk+-devel >= 1.2
-BuildRequires:		libextractor-devel >= 0.2.3
-BuildRequires:		openssl-devel >= 0.9.5
-BuildRequires:		gdbm-devel
-BuildRoot:		%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
+BuildRequires:	gtk+-devel >= 1.2
+BuildRequires:	libextractor-devel >= 0.2.3
+BuildRequires:	openssl-devel >= 0.9.5
+BuildRequires:	gdbm-devel
+BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
+
 # Note that you can only build this RPM if the current GNUnet version
 # is already installed in /usr. The reason is, that a GNUnet library
 # (afsprotocol) is linked against another couple of libraries which
@@ -65,6 +66,37 @@ http://www.gnu.org/software/GNUnet/ and http://www.ovmj.org/GNUnet/
 Note that this RPM does not build the database frontends for tdb and
 mysql (only gdbm, bdb and plain directories are included).
 
+%description -l pl
+GNUnet stanowi szkielet bezpiecznej sieci typu peer-to-peer.
+Podstawow± aplikacj± GNUnet jest anonimowe wspó³dzielenie plików.
+GNUnet stanowi czê¶æ projektu GNU (http://www.gnu.org/).
+
+Podczas gdy wspó³dzielenie plików za pomoc± GNUnet zapewnia
+u¿ytkownikom anonimowo¶æ, umo¿liwia ono równie¿ ewidencjonowanie dla
+zapewnienia lepszego gospodarowania zasobami. Urzytkownicy wnosz±cy
+co¶ s± nagradzni lepsz± jako¶ci± us³ugi. Ka¿dy z równorzêdnych
+u¿ytkowników monitoruje zachowanie pozosta³ych i przydziela zasoby
+u¿ytkownikom, którzy s± ekonomicznie wiarygodni. Kodowanie tre¶ci
+czyni system nagród trudnym do przechytrzenia.
+
+GNUnet wspiera wiele protoko³ów transportowych, aktualnie: UDP, TCP i
+SMTP. Szkielet automatycznie wybiera tani± metodê transportu dostêpn±
+w danej chwili dla obu u¿ytkowników przy dowolnym po³±czeniu. GNUnet
+mo¿e dzia³aæ pomiêdzy dwoma maszynami znajduj±cymi sie za NAT i z
+prawie wszystkimi konfiguracjami firewalli.
+
+Jest to wersja beta. Najwa¿niejsze funkcje zosta³y zaimplementowane i
+przetestowane. Funkcje zapewniaj±ce bezpieczeñstwo s± na swoim
+miejscu, lecz nale¿y zauwa¿yæ, ¿e anonimowo¶æ mo¿e byæ ograniczona ze
+wzglêdu na ma³± liczbê aktywnych uczestników.
+
+Bardziej szczegó³owy opis GNUnet mo¿na znale¼æ na stronie:
+
+http://www.gnu.org/software/GNUnet/ and http://www.ovmj.org/GNUnet/
+
+Nale¿y te¿ zauwa¿yæ, ¿e ten pakiet nie wspiera interfejsu bazodanowego
+dla tdb i mysql (a jedynie dla gdbm, bdb i katalogów).
+
 %package mysql
 Summary:	MySQL database support for GNUnet
 Summary(pl):	Obs³uga bazy MySQL dla GNUnet
@@ -76,6 +108,9 @@ BuildRequires:	mysql-devel >= 3.23.56
 %description mysql
 This package contains MySQL database frontend for GNUnet.
 
+%description mysql -l pl
+Pakiet ten zawiera interfejs bazy danych MySQL dla GNUnet.
+
 #%package tdb
 #Summary:	TDB database support for GNUnet
 #Summary(pl):	Obs³uga bazy TDB dla GNUnet
@@ -84,6 +119,9 @@ This package contains MySQL database frontend for GNUnet.
 
 #%description tdb
 #This package contains TDB database frontend for GNUnet.
+
+#%description tdb -l pl
+#Pakiet ten zawiera interfejs bazy danych TDB dla GNUnet.
 
 %prep
 rm -rf $RPM_BUILD_ROOT
