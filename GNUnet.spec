@@ -6,6 +6,7 @@ License:	GPL
 URL:		http://www.gnu.org/software/GNUnet/
 Version:	0.5.4a
 Source0:	http://www.ovmj.org/GNUnet/download/%{name}-%{version}.tar.gz
+Source1:	gnunet.init
 # Source0-md5:	0a22cadab0b33784d0d5344ce975a088
 Group:		Applications/Network
 ######		Unknown group!
@@ -21,6 +22,8 @@ BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 # odd reason libtool decides to re-link the library :-(. I've spend 6h
 # on this one, there does not seem to be a clean solution.  Note that
 # without the RPM script foo around it, the build works just fine.
+
+%define	_gnunethomedir	/var/lib/GNUnet
 
 %description
 GNUnet is framework for secure peer-to-peer networking. The primary
@@ -91,28 +94,49 @@ cp contrib/gnunet.conf.root $RPM_BUILD_ROOT/etc/gnunet.conf
 mkdir -p $RPM_BUILD_ROOT/etc/skel/.gnunet/
 cp contrib/gnunet.conf $RPM_BUILD_ROOT/etc/skel/.gnunet/
 mkdir -p $RPM_BUILD_ROOT/etc/rc.d/init.d
-cp contrib/initgnunet $RPM_BUILD_ROOT/etc/rc.d/init.d/gnunetd
+install %{SOURCE1} $RPM_BUILD_ROOT/etc/rc.d/init.d/gnunet
+install -d $RPM_BUILD_ROOT%{_gnunethomedir}/data/hosts
 
 %clean
 rm -rf $RPM_BUILD_ROOT
 
+%pre
+if [ -n "`getgid gnunet`" ]; then
+	if [ "`getgid gnunet`" != "115" ]; then
+		echo "Error: group gnunet doesn't have gid=115. Correct this before installing GNUnet." 1>&2
+		exit 1
+	fi
+else
+	/usr/sbin/groupadd -g 115 -r -f gnunet
+
+if [ -n "`id -u gnunet 2>/dev/null`" ]; then
+	if [ "`id -u gnunet`" != "89" ]; then
+		echo "Error: user gnunet doesn't have uid=115. Correct this before installing GNUnet." 1>&2
+		exit 1
+	fi
+else
+	/usr/sbin/useradd -o -r -u 115 \
+		-d /var/lib/GNUnet -s /bin/sh -g gnunet \
+		-c "GNUnet daemon" gnunet 1>&2
+fi
+
 %post
-groupadd -r -f gnunet &>/dev/null || groupadd -f gnunet &> /dev/null || true
-mkdir -p /var/lib/GNUnet
-useradd -r -g gnunet -d /var/lib/GNUnet gnunet &>/dev/null || useradd -g gnunet -d /var/lib/GNUnet gnunet &> /dev/null || true
-chmod 775 /var/lib/GNUnet
-chown -R gnunet:gnunet /var/lib/GNUnet &> /dev/null
-echo " "
-echo " "
-echo "Configure GNUnet by editing"
-echo "# vi /etc/gnunet.conf"
-echo "Start gnunetd as root with"
-echo "# /etc/rc.d/init.d/gnunetd start"
-echo "Test that gnunetd operates properly with"
-echo "# gnunet-stats"
-echo "Diagnose errors reading the log-file in"
-echo "# tail -f /var/lib/GNUnet/logs"
 /sbin/ldconfig
+if [ -f /var/lock/subsys/gnunet ]; then
+	 /etc/rc.d/init.d/gnunet restart >&2
+else
+	echo "Run \"/etc/rc.d/init.d/gnunet start\" to start GNUnet." >&2
+fi
+
+%preun
+if [ -f /var/lock/subsys/gnunet ]; then
+	/etc/rc.d/init.d/gnunet stop
+fi
+
+%postun
+/sbin/ldconfig
+/usr/sbin/userdel gnunet &> /dev/null
+/usr/sbin/groupdel gnunet &> /dev/null
 
 %files
 %defattr(644,root,root,755)
@@ -211,9 +235,9 @@ echo "# tail -f /var/lib/GNUnet/logs"
 %{_libdir}/libgnunetutil.so
 %{_libdir}/libgnunetutil.so.0
 %attr(755,root,root) %{_libdir}/libgnunetutil.so.0.0.0
-%{_prefix}/..%{_sysconfdir}/gnunet.conf
-%{_prefix}/../etc/skel/.gnunet
-%{_prefix}/../etc/rc.d/init.d/gnunetd
+%attr(640,root,root) %config(noreplace) %verify(not md5 size mtime) %{_sysconfdir}/gnunet.conf
+%{_sysconfdir}/skel/.gnunet
+%attr(755,root,root) %{_sysconfdir}/rc.d/init.d/gnunetd
 %doc %{_mandir}/man1/gnunetd.1.gz
 %doc %{_mandir}/man1/gnunet-convert.1.gz
 %doc %{_mandir}/man1/gnunet-gtk.1.gz
@@ -230,6 +254,8 @@ echo "# tail -f /var/lib/GNUnet/logs"
 %doc %{_mandir}/man1/gnunet-tracekit.1.gz
 %doc %{_mandir}/man1/gnunet-stats.1.gz
 %doc %{_mandir}/man1/gnunet-peer-info.1.gz
+%attr(750,gnunet,gnunet) %dir %{_gnunethomedir}
+%attr(750,gnunet,gnunet) %dir %{_gnunethomedir}/data/hosts
 
 %files mysql
 %defattr(644,root,root,755)
