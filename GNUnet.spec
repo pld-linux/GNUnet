@@ -19,7 +19,7 @@ BuildRequires:	libextractor-devel >= 0.2.3
 BuildRequires:	libltdl-devel
 BuildRequires:	libtool >= 1:1.4.2-9
 BuildRequires:	mysql-devel >= 3.23.56
-BuildRequires:	openssl-devel >= 0.9.5
+BuildRequires:	openssl-devel >= 0.9.7d
 BuildRequires:	tdb-devel
 PreReq:		rc-scripts
 Requires(pre):	/usr/bin/getgid
