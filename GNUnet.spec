@@ -94,7 +94,7 @@ wzglêdu na ma³± liczbê aktywnych uczestników.
 
 Bardziej szczegó³owy opis GNUnet mo¿na znale¼æ na stronie:
 
-http://www.gnu.org/software/GNUnet/ and http://www.ovmj.org/GNUnet/
+http://www.gnu.org/software/GNUnet/ i http://www.ovmj.org/GNUnet/
 
 Nale¿y te¿ zauwa¿yæ, ¿e ten pakiet zawiera tylko interfejs bazodanowy
 dla zwyk³ych katalogów; wtyczki obs³uguj±ce bazy bdb, gdbm, mysql i
@@ -151,7 +151,7 @@ Pakiet ten zawiera interfejs bazy danych TDB dla GNUnet.
 
 %prep
 %setup -q
-%patch -p1
+%patch0 -p1
 
 %build
 %{__libtoolize}
@@ -233,6 +233,7 @@ fi
 
 %files
 %defattr(644,root,root,755)
+%doc AUTHORS ChangeLog NEWS PLATFORMS README UPDATING
 %attr(755,root,root) %{_bindir}/gnunetd
 %attr(755,root,root) %{_bindir}/gnunet-insert
 %attr(755,root,root) %{_bindir}/gnunet-search
