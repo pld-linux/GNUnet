@@ -237,7 +237,7 @@ fi
 %attr(755,root,root) %{_libdir}/libgnunetutil.so.0.0.0
 %attr(640,root,root) %config(noreplace) %verify(not md5 size mtime) %{_sysconfdir}/gnunet.conf
 %{_sysconfdir}/skel/.gnunet
-%attr(755,root,root) %{_sysconfdir}/rc.d/init.d/gnunetd
+%attr(755,root,root) %{_sysconfdir}/rc.d/init.d/gnunet
 %doc %{_mandir}/man1/gnunetd.1.gz
 %doc %{_mandir}/man1/gnunet-convert.1.gz
 %doc %{_mandir}/man1/gnunet-gtk.1.gz
