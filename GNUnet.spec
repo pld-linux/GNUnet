@@ -1,6 +1,6 @@
-Name:		GNUnet
 Summary:	An anonymous distributed secure network
 Summary(pl):	Anonimowa, rozproszona, bezpieczna sieæ
+Name:		GNUnet
 Version:	0.5.4a
 Release:	0.1
 Group:		Applications/Networking
@@ -9,10 +9,7 @@ Source0:	http://www.ovmj.org/GNUnet/download/%{name}-%{version}.tar.gz
 # Source0-md5:	0a22cadab0b33784d0d5344ce975a088
 Source1:	gnunet.init
 URL:		http://www.gnu.org/software/GNUnet/
-Requires:	gtk+ >= 1.2
-Requires:	libextractor >= 0.2.3
-Requires:	openssl >= 0.9.5
-Requires:	gdbm
+PreReq:		rc-scripts
 Requires(pre):	/usr/bin/getgid
 Requires(pre):	/bin/id
 Requires(pre):	/usr/sbin/groupadd
@@ -20,10 +17,15 @@ Requires(pre):	/usr/sbin/useradd
 Requires(postun):	/usr/sbin/userdel
 Requires(postun):	/usr/sbin/groupdel
 Requires(post,preun):	/sbin/chkconfig
+Requires(post,postun):	/sbin/ldconfig
+Requires:	gdbm
+Requires:	gtk+ >= 1.2
+Requires:	libextractor >= 0.2.3
+Requires:	openssl >= 0.9.5
+BuildRequires:	gdbm-devel
 BuildRequires:	gtk+-devel >= 1.2
 BuildRequires:	libextractor-devel >= 0.2.3
 BuildRequires:	openssl-devel >= 0.9.5
-BuildRequires:	gdbm-devel
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 # Note that you can only build this RPM if the current GNUnet version
@@ -73,8 +75,8 @@ GNUnet stanowi czê¶æ projektu GNU (http://www.gnu.org/).
 
 Podczas gdy wspó³dzielenie plików za pomoc± GNUnet zapewnia
 u¿ytkownikom anonimowo¶æ, umo¿liwia ono równie¿ ewidencjonowanie dla
-zapewnienia lepszego gospodarowania zasobami. Urzytkownicy wnosz±cy
-co¶ s± nagradzni lepsz± jako¶ci± us³ugi. Ka¿dy z równorzêdnych
+zapewnienia lepszego gospodarowania zasobami. U¿ytkownicy wnosz±cy
+co¶ s± nagradzani lepsz± jako¶ci± us³ugi. Ka¿dy z równorzêdnych
 u¿ytkowników monitoruje zachowanie pozosta³ych i przydziela zasoby
 u¿ytkownikom, którzy s± ekonomicznie wiarygodni. Kodowanie tre¶ci
 czyni system nagród trudnym do przechytrzenia.
@@ -82,7 +84,7 @@ czyni system nagród trudnym do przechytrzenia.
 GNUnet wspiera wiele protoko³ów transportowych, aktualnie: UDP, TCP i
 SMTP. Szkielet automatycznie wybiera tani± metodê transportu dostêpn±
 w danej chwili dla obu u¿ytkowników przy dowolnym po³±czeniu. GNUnet
-mo¿e dzia³aæ pomiêdzy dwoma maszynami znajduj±cymi sie za NAT i z
+mo¿e dzia³aæ pomiêdzy dwoma maszynami znajduj±cymi siê za NAT i z
 prawie wszystkimi konfiguracjami firewalli.
 
 Jest to wersja beta. Najwa¿niejsze funkcje zosta³y zaimplementowane i
@@ -192,8 +194,10 @@ fi
 
 %postun
 /sbin/ldconfig
-/usr/sbin/userdel gnunet 2> /dev/null
-/usr/sbin/groupdel gnunet 2> /dev/null
+if [ "$1" = "0" ]; then
+	/usr/sbin/userdel gnunet 2>/dev/null
+	/usr/sbin/groupdel gnunet 2>/dev/null
+fi
 
 %files
 %defattr(644,root,root,755)
@@ -302,23 +306,23 @@ fi
 %attr(755,root,root) %{_libdir}/libgnunetutil.so.0.0.0
 %attr(640,root,root) %config(noreplace) %verify(not md5 size mtime) %{_sysconfdir}/gnunet.conf
 %{_sysconfdir}/skel/.gnunet
-%attr(755,root,root) %{_sysconfdir}/rc.d/init.d/gnunet
-%doc %{_mandir}/man1/gnunetd.1.gz
-%doc %{_mandir}/man1/gnunet-convert.1.gz
-%doc %{_mandir}/man1/gnunet-gtk.1.gz
-%doc %{_mandir}/man1/gnunet-insert-multi.1.gz
-%doc %{_mandir}/man1/gnunet-download.1.gz
-%doc %{_mandir}/man1/gnunet-delete.1.gz
-%doc %{_mandir}/man1/gnunet-insert.1.gz
-%doc %{_mandir}/man1/gnunet-search.1.gz
-%doc %{_mandir}/man1/gnunet-check.1.gz
-%doc %{_mandir}/man1/gnunet-transport-check.1.gz
-%doc %{_mandir}/man1/gnunet-chat.1.gz
-%doc %{_mandir}/man5/gnunet.conf.5.gz
-%doc %{_mandir}/man1/gnunet-tbench.1.gz
-%doc %{_mandir}/man1/gnunet-tracekit.1.gz
-%doc %{_mandir}/man1/gnunet-stats.1.gz
-%doc %{_mandir}/man1/gnunet-peer-info.1.gz
+%attr(755,root,root) /etc}/rc.d/init.d/gnunet
+%{_mandir}/man1/gnunetd.1*
+%{_mandir}/man1/gnunet-convert.1*
+%{_mandir}/man1/gnunet-gtk.1*
+%{_mandir}/man1/gnunet-insert-multi.1*
+%{_mandir}/man1/gnunet-download.1*
+%{_mandir}/man1/gnunet-delete.1*
+%{_mandir}/man1/gnunet-insert.1*
+%{_mandir}/man1/gnunet-search.1*
+%{_mandir}/man1/gnunet-check.1*
+%{_mandir}/man1/gnunet-transport-check.1*
+%{_mandir}/man1/gnunet-chat.1*
+%{_mandir}/man5/gnunet.conf.5*
+%{_mandir}/man1/gnunet-tbench.1*
+%{_mandir}/man1/gnunet-tracekit.1*
+%{_mandir}/man1/gnunet-stats.1*
+%{_mandir}/man1/gnunet-peer-info.1*
 %attr(2770,gnunet,gnunet) %dir %{_gnunethomedir}
 %attr(2770,gnunet,gnunet) %dir %{_gnunethomedir}/afs
 %attr(2770,gnunet,gnunet) %dir %{_gnunethomedir}/data
