@@ -1,21 +1,27 @@
+#
+# Conditional build:
+%bcond_without	ipv6	# without IPv6 support
+#
 Summary:	An anonymous distributed secure network
 Summary(pl):	Anonimowa, rozproszona, bezpieczna sieæ
 Name:		GNUnet
-Version:	0.6.2a
+Version:	0.6.5
 Release:	0.1
 Group:		Applications/Networking
 License:	GPL
 Source0:	http://www.ovmj.org/GNUnet/download/%{name}-%{version}.tar.bz2
-# Source0-md5:	5b318dc50ca3f410ec7ef4cea0cc3c96
+# Source0-md5:	8bca32b55dccdb5bde7bd2b38df9df03
 Source1:	gnunet.init
 Patch0:		%{name}-nolibs.patch
+Patch1:		%{name}-ipv6.patch
 URL:		http://www.gnu.org/software/GNUnet/
 BuildRequires:	autoconf >= 2.57
 BuildRequires:	automake
 BuildRequires:	db-devel
 BuildRequires:	gdbm-devel
-BuildRequires:	gtk+-devel >= 1.2
-BuildRequires:	libextractor-devel >= 0.2.6
+BuildRequires:	gettext-devel
+BuildRequires:	gtk+2-devel >= 2.4
+BuildRequires:	libextractor-devel >= 0.3.10
 BuildRequires:	libltdl-devel
 BuildRequires:	libtool >= 1:1.4.2-9
 BuildRequires:	mysql-devel >= 3.23.56
@@ -33,8 +39,8 @@ Requires(post,postun):	/sbin/ldconfig
 Requires(post,preun):	/sbin/chkconfig
 Requires:	gdbm
 Requires:	gtk+ >= 1.2
-Requires:	libextractor >= 0.2.3
-Requires:	openssl >= 0.9.5
+Requires:	libextractor >= 0.3.10
+Requires:	openssl >= 0.9.7d
 Provides:	group(gnunet)
 Provides:	user(gnunet)
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
@@ -107,7 +113,7 @@ tdb znajduj± siê w osobnych podpakietach.
 Summary:	BerkeleyDB database support for GNUnet
 Summary(pl):	Obs³uga bazy BerkeleyDB dla GNUnet
 Group:		Applications/Network
-Requires:	%{name} = %{version}
+Requires:	%{name} = %{version}-%{release}
 
 %description bdb
 This package contains BerkeleyDB database frontend for GNUnet.
@@ -119,7 +125,7 @@ Pakiet ten zawiera interfejs bazy danych BerkeleyDB dla GNUnet.
 Summary:	GDBM database support for GNUnet
 Summary(pl):	Obs³uga bazy GDBM dla GNUnet
 Group:		Applications/Network
-Requires:	%{name} = %{version}
+Requires:	%{name} = %{version}-%{release}
 
 %description gdbm
 This package contains GDBM database frontend for GNUnet.
@@ -131,7 +137,7 @@ Pakiet ten zawiera interfejs bazy danych GDBM dla GNUnet.
 Summary:	MySQL database support for GNUnet
 Summary(pl):	Obs³uga bazy MySQL dla GNUnet
 Group:		Applications/Network
-Requires:	%{name} = %{version}
+Requires:	%{name} = %{version}-%{release}
 Requires:	mysql-libs >= 3.23.56
 
 %description mysql
@@ -144,7 +150,7 @@ Pakiet ten zawiera interfejs bazy danych MySQL dla GNUnet.
 Summary:	TDB database support for GNUnet
 Summary(pl):	Obs³uga bazy TDB dla GNUnet
 Group:		Applications/Network
-Requires:	%{name} = %{version}
+Requires:	%{name} = %{version}-%{release}
 
 %description tdb
 This package contains TDB database frontend for GNUnet.
@@ -155,9 +161,11 @@ Pakiet ten zawiera interfejs bazy danych TDB dla GNUnet.
 %prep
 %setup -q
 %patch0 -p1
+%{?with_ipv6:%patch1 -p1}
 
 %build
-%{__libtoolize}
+%{__gettextize}
+%{__libtoolize} --ltdl
 %{__aclocal}
 %{__autoconf}
 %{__autoheader}
@@ -168,7 +176,7 @@ Pakiet ten zawiera interfejs bazy danych TDB dla GNUnet.
 	--with-mysql=/usr \
 	--with-tdb=/usr \
 	--with-crypto=/usr \
-	--enable-ipv6
+	%{?with_ipv6:--enable-ipv6}
 
 %{__make}
 
@@ -186,7 +194,11 @@ install contrib/gnunet.user $RPM_BUILD_ROOT%{_sysconfdir}/skel/.gnunet/gnunet.co
 install %{SOURCE1} $RPM_BUILD_ROOT/etc/rc.d/init.d/gnunet
 
 # these are normal, dynamically linked libraries - there is no -devel, so *.la not needed
-rm -f $RPM_BUILD_ROOT%{_libdir}/{libgnunetutil,libgnunet_afs_esed2}.la
+rm -f $RPM_BUILD_ROOT%{_libdir}/{libgnunetutil,libgnunet_afs_esed2,libgnunetdht_api}.la \
+	$RPM_BUILD_ROOT%{_libdir}/{libgnunetdht_datastore_memory,libgnunetrpc_util}.la \
+	$RPM_BUILD_ROOT%{_includedir}/*.h
+
+%find_lang %{name}
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -219,7 +231,6 @@ else
 	echo "Run \"/etc/rc.d/init.d/gnunet start\" to start GNUnet." >&2
 fi
 
-
 %preun
 if [ -f /var/lock/subsys/gnunet ]; then
 	/etc/rc.d/init.d/gnunet stop
@@ -233,80 +244,95 @@ if [ "$1" = "0" ]; then
 	%groupremove gnunet
 fi
 
-%files
+%files -f %{name}.lang
 %defattr(644,root,root,755)
 %doc AUTHORS ChangeLog NEWS PLATFORMS README UPDATING
-%attr(755,root,root) %{_bindir}/gnunetd
-%attr(755,root,root) %{_bindir}/gnunet-insert
-%attr(755,root,root) %{_bindir}/gnunet-search
-%attr(755,root,root) %{_bindir}/gnunet-download
-%attr(755,root,root) %{_bindir}/gnunet-gtk
 %attr(755,root,root) %{_bindir}/gnunet-chat
-%attr(755,root,root) %{_bindir}/gnunet-delete
-%attr(755,root,root) %{_bindir}/gnunet-stats
 %attr(755,root,root) %{_bindir}/gnunet-check
 %attr(755,root,root) %{_bindir}/gnunet-convert
-%attr(755,root,root) %{_bindir}/gnunet-transport-check
-%attr(755,root,root) %{_bindir}/gnunet-tbench
-%attr(755,root,root) %{_bindir}/gnunet-peer-info
-%attr(755,root,root) %{_bindir}/gnunet-tracekit
+%attr(755,root,root) %{_bindir}/gnunet-delete
+%attr(755,root,root) %{_bindir}/gnunet-dht-join
+%attr(755,root,root) %{_bindir}/gnunet-dht-query
 %attr(755,root,root) %{_bindir}/gnunet-directory
+%attr(755,root,root) %{_bindir}/gnunet-download
+#%attr(755,root,root) %{_bindir}/gnunet-download-manager.scm
+%attr(755,root,root) %{_bindir}/gnunet-gtk
+%attr(755,root,root) %{_bindir}/gnunet-insert
+%attr(755,root,root) %{_bindir}/gnunet-peer-info
 %attr(755,root,root) %{_bindir}/gnunet-pseudonym
+%attr(755,root,root) %{_bindir}/gnunet-search
 %attr(755,root,root) %{_bindir}/gnunet-setup
+%attr(755,root,root) %{_bindir}/gnunet-stats
+%attr(755,root,root) %{_bindir}/gnunet-tbench
 %attr(755,root,root) %{_bindir}/gnunet-testbed
+%attr(755,root,root) %{_bindir}/gnunet-tracekit
+%attr(755,root,root) %{_bindir}/gnunet-transport-check
+%attr(755,root,root) %{_bindir}/gnunet-update
+%attr(755,root,root) %{_bindir}/gnunetd
 
 # normal, dynamically linked libraries
-%attr(755,root,root) %{_libdir}/libgnunetutil.so.0.0.0
 %attr(755,root,root) %{_libdir}/libgnunet_afs_esed2.so.0.0.0
+%attr(755,root,root) %{_libdir}/libgnunetdht_api.so.0.0.0
+%attr(755,root,root) %{_libdir}/libgnunetdht_datastore_memory.so.0.0.0
+%attr(755,root,root) %{_libdir}/libgnunetrpc_util.so.0.0.0
+%attr(755,root,root) %{_libdir}/libgnunetutil.so.0.0.0
 
 # ltdlopened plugins - these must have *.la
 %attr(755,root,root) %{_libdir}/libgnunetafs_database_directory.so
 %{_libdir}/libgnunetafs_database_directory.la
 %attr(755,root,root) %{_libdir}/libgnunetafs_protocol.so
 %{_libdir}/libgnunetafs_protocol.la
-%attr(755,root,root) %{_libdir}/libgnunettestbed_protocol.so
-%{_libdir}/libgnunettestbed_protocol.la
-%attr(755,root,root) %{_libdir}/libgnunettransport_nat.so
-%{_libdir}/libgnunettransport_nat.la
 %attr(755,root,root) %{_libdir}/libgnunetchat_protocol.so
 %{_libdir}/libgnunetchat_protocol.la
+%attr(755,root,root) %{_libdir}/libgnunetdht_protocol.so
+%{_libdir}/libgnunetdht_protocol.la
+%attr(755,root,root) %{_libdir}/libgnunetrpc_protocol.so
+%{_libdir}/libgnunetrpc_protocol.la
 %attr(755,root,root) %{_libdir}/libgnunettbench_protocol.so
 %{_libdir}/libgnunettbench_protocol.la
+%attr(755,root,root) %{_libdir}/libgnunettestbed_protocol.so
+%{_libdir}/libgnunettestbed_protocol.la
 %attr(755,root,root) %{_libdir}/libgnunettracekit_protocol.so
 %{_libdir}/libgnunettracekit_protocol.la
-%attr(755,root,root) %{_libdir}/libgnunettransport_smtp.so
-%{_libdir}/libgnunettransport_smtp.la
 %attr(755,root,root) %{_libdir}/libgnunettransport_http.so
 %{_libdir}/libgnunettransport_http.la
+%attr(755,root,root) %{_libdir}/libgnunettransport_nat.so
+%{_libdir}/libgnunettransport_nat.la
+%attr(755,root,root) %{_libdir}/libgnunettransport_smtp.so
+%{_libdir}/libgnunettransport_smtp.la
 %attr(755,root,root) %{_libdir}/libgnunettransport_tcp.so
 %{_libdir}/libgnunettransport_tcp.la
-%attr(755,root,root) %{_libdir}/libgnunettransport_tcp6.so
-%{_libdir}/libgnunettransport_tcp6.la
 %attr(755,root,root) %{_libdir}/libgnunettransport_udp.so
 %{_libdir}/libgnunettransport_udp.la
+%if %{with ipv6}
+%attr(755,root,root) %{_libdir}/libgnunettransport_tcp6.so
+%{_libdir}/libgnunettransport_tcp6.la
 %attr(755,root,root) %{_libdir}/libgnunettransport_udp6.so
 %{_libdir}/libgnunettransport_udp6.la
+%endif
 
 %attr(640,root,root) %config(noreplace) %verify(not md5 size mtime) %{_sysconfdir}/gnunet.conf
 %{_sysconfdir}/skel/.gnunet
 %attr(754,root,root) /etc/rc.d/init.d/gnunet
-%{_mandir}/man1/gnunetd.1*
-%{_mandir}/man1/gnunet-convert.1*
-%{_mandir}/man1/gnunet-gtk.1*
-%{_mandir}/man1/gnunet-download.1*
-%{_mandir}/man1/gnunet-delete.1*
-%{_mandir}/man1/gnunet-insert.1*
-%{_mandir}/man1/gnunet-search.1*
-%{_mandir}/man1/gnunet-check.1*
-%{_mandir}/man1/gnunet-transport-check.1*
 %{_mandir}/man1/gnunet-chat.1*
-%{_mandir}/man1/gnunet-tbench.1*
-%{_mandir}/man1/gnunet-tracekit.1*
-%{_mandir}/man1/gnunet-stats.1*
-%{_mandir}/man1/gnunet-peer-info.1*
+%{_mandir}/man1/gnunet-check.1*
+%{_mandir}/man1/gnunet-convert.1*
+%{_mandir}/man1/gnunet-delete.1*
 %{_mandir}/man1/gnunet-directory.1*
+%{_mandir}/man1/gnunet-download-manager.1*
+%{_mandir}/man1/gnunet-download.1*
+%{_mandir}/man1/gnunet-gtk.1*
+%{_mandir}/man1/gnunet-insert.1*
+%{_mandir}/man1/gnunet-peer-info.1*
 %{_mandir}/man1/gnunet-pseudonym.1*
+%{_mandir}/man1/gnunet-search.1*
+%{_mandir}/man1/gnunet-stats.1*
+%{_mandir}/man1/gnunet-tbench.1*
 %{_mandir}/man1/gnunet-testbed.1*
+%{_mandir}/man1/gnunet-tracekit.1*
+%{_mandir}/man1/gnunet-transport-check.1*
+%{_mandir}/man1/gnunet-update.1*
+%{_mandir}/man1/gnunetd.1*
 %{_mandir}/man5/gnunet.conf.5*
 %attr(2770,gnunet,gnunet) %dir %{_gnunethomedir}
 %attr(2770,gnunet,gnunet) %dir %{_gnunethomedir}/data
@@ -318,6 +344,9 @@ fi
 # these (and *.so for them) should be in -devel or /dev/null
 #%{_libdir}/libgnunetutil.la
 #%{_libdir}/libgnunet_afs_esed2.la
+#%{_libdir}/libgnunetdht_api.la
+#%{_libdir}/libgnunetdht_datastore_memory.la
+#%{_libdir}/libgnunetrpc_util.la
 
 %files bdb
 %defattr(644,root,root,755)
