@@ -1,12 +1,12 @@
 Summary:	An anonymous distributed secure network
 Summary(pl):	Anonimowa, rozproszona, bezpieczna sieæ
 Name:		GNUnet
-Version:	0.6.1d
+Version:	0.6.2a
 Release:	0.1
 Group:		Applications/Networking
 License:	GPL
 Source0:	http://www.ovmj.org/GNUnet/download/%{name}-%{version}.tar.bz2
-# Source0-md5:	37fd82efbe474247df3df400315e64d6
+# Source0-md5:	5b318dc50ca3f410ec7ef4cea0cc3c96
 Source1:	gnunet.init
 Patch0:		%{name}-nolibs.patch
 URL:		http://www.gnu.org/software/GNUnet/
@@ -164,8 +164,8 @@ Pakiet ten zawiera interfejs bazy danych TDB dla GNUnet.
 	--with-gdbm=/usr \
 	--with-mysql=/usr \
 	--with-tdb=/usr \
-	--with-crypto=/usr
-# no --enable-ipv6  -- some files missing
+	--with-crypto=/usr \
+	--enable-ipv6
 
 %{__make}
 
@@ -277,12 +277,12 @@ fi
 %{_libdir}/libgnunettransport_http.la
 %attr(755,root,root) %{_libdir}/libgnunettransport_tcp.so
 %{_libdir}/libgnunettransport_tcp.la
-#%attr(755,root,root) %{_libdir}/libgnunettransport_tcp6.so.0.0.0
-#%{_libdir}/libgnunettransport_tcp6.la
+%attr(755,root,root) %{_libdir}/libgnunettransport_tcp6.so
+%{_libdir}/libgnunettransport_tcp6.la
 %attr(755,root,root) %{_libdir}/libgnunettransport_udp.so
 %{_libdir}/libgnunettransport_udp.la
-#%attr(755,root,root) %{_libdir}/libgnunettransport_udp6.so.0.0.0
-#%{_libdir}/libgnunettransport_udp6.la
+%attr(755,root,root) %{_libdir}/libgnunettransport_udp6.so
+%{_libdir}/libgnunettransport_udp6.la
 
 %attr(640,root,root) %config(noreplace) %verify(not md5 size mtime) %{_sysconfdir}/gnunet.conf
 %{_sysconfdir}/skel/.gnunet
