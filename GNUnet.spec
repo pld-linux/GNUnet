@@ -20,20 +20,23 @@ BuildRequires:	libltdl-devel
 BuildRequires:	libtool >= 1:1.4.2-9
 BuildRequires:	mysql-devel >= 3.23.56
 BuildRequires:	openssl-devel >= 0.9.7d
+BuildRequires:	rpmbuild(macros) >= 1.159
 BuildRequires:	tdb-devel
 PreReq:		rc-scripts
-Requires(pre):	/usr/bin/getgid
 Requires(pre):	/bin/id
+Requires(pre):	/usr/bin/getgid
 Requires(pre):	/usr/sbin/groupadd
 Requires(pre):	/usr/sbin/useradd
-Requires(postun):	/usr/sbin/userdel
 Requires(postun):	/usr/sbin/groupdel
-Requires(post,preun):	/sbin/chkconfig
+Requires(postun):	/usr/sbin/userdel
 Requires(post,postun):	/sbin/ldconfig
+Requires(post,preun):	/sbin/chkconfig
 Requires:	gdbm
 Requires:	gtk+ >= 1.2
 Requires:	libextractor >= 0.2.3
 Requires:	openssl >= 0.9.5
+Provides:	group(gnunet)
+Provides:	user(gnunet)
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %define	_gnunethomedir	/var/lib/GNUnet
@@ -189,22 +192,21 @@ rm -f $RPM_BUILD_ROOT%{_libdir}/{libgnunetutil,libgnunet_afs_esed2}.la
 rm -rf $RPM_BUILD_ROOT
 
 %pre
-if [ -n "`getgid gnunet`" ]; then
-	if [ "`getgid gnunet`" != "115" ]; then
+if [ -n "`/usr/bin/getgid gnunet`" ]; then
+	if [ "`/usr/bin/getgid gnunet`" != 115 ]; then
 		echo "Error: group gnunet doesn't have gid=115. Correct this before installing GNUnet." 1>&2
 		exit 1
 	fi
 else
-	/usr/sbin/groupadd -g 115 -r -f gnunet
+	/usr/sbin/groupadd -g 115 gnunet 1>&2
 fi
-if [ -n "`id -u gnunet 2>/dev/null`" ]; then
-	if [ "`id -u gnunet`" != "115" ]; then
+if [ -n "`/bin/id -u gnunet 2>/dev/null`" ]; then
+	if [ "`/bin/id -u gnunet`" != 115 ]; then
 		echo "Error: user gnunet doesn't have uid=115. Correct this before installing GNUnet." 1>&2
 		exit 1
 	fi
 else
-	/usr/sbin/useradd -o -r -u 115 \
-		-d /var/lib/GNUnet -s /bin/sh -g gnunet \
+	/usr/sbin/useradd -o -u 115 -d /var/lib/GNUnet -s /bin/sh -g gnunet \
 		-c "GNUnet daemon" gnunet 1>&2
 fi
 
@@ -227,8 +229,8 @@ fi
 %postun
 /sbin/ldconfig
 if [ "$1" = "0" ]; then
-	/usr/sbin/userdel gnunet 2>/dev/null
-	/usr/sbin/groupdel gnunet 2>/dev/null
+	%userremove gnunet
+	%groupremove gnunet
 fi
 
 %files
