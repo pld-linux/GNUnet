@@ -1,20 +1,30 @@
-Name:		GNUnet
-Release:	0.1
-Summary:	An anonymous distributed secure network
-Summary(pl):	Anonimowa, rozproszona, bezpieczna sieæ
-License:	GPL
-URL:		http://www.gnu.org/software/GNUnet/
-Version:	0.5.4a
-Source0:	http://www.ovmj.org/GNUnet/download/%{name}-%{version}.tar.gz
-Source1:	gnunet.init
-# Source0-md5:	0a22cadab0b33784d0d5344ce975a088
-Group:		Applications/Network
-######		Unknown group!
-Requires:	gtk+ >= 1.2
-Requires:	libextractor >= 0.2.3
-BuildRequires:	gtk+-devel >= 1.2
-BuildRequires:	libextractor-devel >= 0.2.3
-BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
+Name:			GNUnet
+Release:		0.1
+Summary:		An anonymous distributed secure network
+Summary(pl):		Anonimowa, rozproszona, bezpieczna sieæ
+License:		GPL
+URL:			http://www.gnu.org/software/GNUnet/
+Version:		0.5.4a
+Source0:		http://www.ovmj.org/GNUnet/download/%{name}-%{version}.tar.gz
+Source1:		gnunet.init
+# Source0-md5:		0a22cadab0b33784d0d5344ce975a088
+Group:			Applications/Networking
+Requires:		gtk+ >= 1.2
+Requires:		libextractor >= 0.2.3
+Requires:		openssl >= 0.9.5
+Requires:		gdbm
+Requires(pre):		/usr/bin/getgid
+Requires(pre):		/bin/id
+Requires(pre):		/usr/sbin/groupadd
+Requires(pre):		/usr/sbin/useradd
+Requires(postun):	/usr/sbin/userdel
+Requires(postun):	/usr/sbin/groupdel
+Requires(post,preun):	/sbin/chkconfig
+BuildRequires:		gtk+-devel >= 1.2
+BuildRequires:		libextractor-devel >= 0.2.3
+BuildRequires:		openssl-devel >= 0.9.5
+BuildRequires:		gdbm-devel
+BuildRoot:		%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 # Note that you can only build this RPM if the current GNUnet version
 # is already installed in /usr. The reason is, that a GNUnet library
 # (afsprotocol) is linked against another couple of libraries which
@@ -60,6 +70,7 @@ Summary:	MySQL database support for GNUnet
 Summary(pl):	Obs³uga bazy MySQL dla GNUnet
 Group:		Applications/Network
 Requires:	%{name} = %{version}
+Requires:	mysql-libs >= 3.23.56
 BuildRequires:	mysql-devel >= 3.23.56
 
 %description mysql
@@ -79,7 +90,11 @@ rm -rf $RPM_BUILD_ROOT
 %setup -q
 
 %build
-%configure --with-mysql=/usr --with-tdb=/usr
+%configure \
+	--with-gdbm=/usr \
+	--with-mysql=/usr \
+	--with-tdb=/usr \
+	--with-crypto=/usr
 %{__make}
 
 %install
@@ -89,13 +104,14 @@ rm -rf $RPM_BUILD_ROOT
 rm -f $RPM_BUILD_ROOT/usr/lib/*.a
 #rm -f $RPM_BUILD_ROOT/usr/lib/*_tdb.*
 rm -f $RPM_BUILD_ROOT/usr/lib/*.a
-mkdir -p $RPM_BUILD_ROOT/etc
-cp contrib/gnunet.conf.root $RPM_BUILD_ROOT/etc/gnunet.conf
-mkdir -p $RPM_BUILD_ROOT/etc/skel/.gnunet/
-cp contrib/gnunet.conf $RPM_BUILD_ROOT/etc/skel/.gnunet/
-mkdir -p $RPM_BUILD_ROOT/etc/rc.d/init.d
+mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}
+cp contrib/gnunet.conf.root $RPM_BUILD_ROOT%{_sysconfdir}/gnunet.conf
+mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/skel/.gnunet/
+cp contrib/gnunet.conf $RPM_BUILD_ROOT%{_sysconfdir}/skel/.gnunet/
+mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/rc.d/init.d
 install %{SOURCE1} $RPM_BUILD_ROOT/etc/rc.d/init.d/gnunet
 install -d $RPM_BUILD_ROOT%{_gnunethomedir}/data/hosts
+install -d $RPM_BUILD_ROOT%{_gnunethomedir}/afs
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -108,7 +124,7 @@ if [ -n "`getgid gnunet`" ]; then
 	fi
 else
 	/usr/sbin/groupadd -g 115 -r -f gnunet
-
+fi
 if [ -n "`id -u gnunet 2>/dev/null`" ]; then
 	if [ "`id -u gnunet`" != "89" ]; then
 		echo "Error: user gnunet doesn't have uid=115. Correct this before installing GNUnet." 1>&2
@@ -122,21 +138,24 @@ fi
 
 %post
 /sbin/ldconfig
+/sbin/chkconfig --add gnunet
 if [ -f /var/lock/subsys/gnunet ]; then
 	 /etc/rc.d/init.d/gnunet restart >&2
 else
 	echo "Run \"/etc/rc.d/init.d/gnunet start\" to start GNUnet." >&2
 fi
 
+
 %preun
 if [ -f /var/lock/subsys/gnunet ]; then
 	/etc/rc.d/init.d/gnunet stop
 fi
+/sbin/chkconfig --del gnunet
 
 %postun
 /sbin/ldconfig
-/usr/sbin/userdel gnunet &> /dev/null
-/usr/sbin/groupdel gnunet &> /dev/null
+/usr/sbin/userdel gnunet 2> /dev/null
+/usr/sbin/groupdel gnunet 2> /dev/null
 
 %files
 %defattr(644,root,root,755)
@@ -155,6 +174,10 @@ fi
 %attr(755,root,root) %{_bindir}/gnunet-tbench
 %attr(755,root,root) %{_bindir}/gnunet-peer-info
 %attr(755,root,root) %{_bindir}/gnunet-tracekit
+%{_libdir}/libextractor_lower.la
+%{_libdir}/libextractor_lower.so
+%{_libdir}/libextractor_lower.so.0
+%attr(755,root,root) %{_libdir}/libextractor_lower.so.0.0.0
 %{_libdir}/libgnunetafs_blocks.la
 %{_libdir}/libgnunetafs_blocks.so
 %{_libdir}/libgnunetafs_blocks.so.0
@@ -167,10 +190,10 @@ fi
 %{_libdir}/libgnunetafs_database_bdb.so
 %{_libdir}/libgnunetafs_database_bdb.so.0
 %attr(755,root,root) %{_libdir}/libgnunetafs_database_bdb.so.0.0.0
-#%{_libdir}/libgnunetafs_database_gdbm.la
-#%{_libdir}/libgnunetafs_database_gdbm.so
-#%{_libdir}/libgnunetafs_database_gdbm.so.0
-#%attr(755,root,root) %{_libdir}/libgnunetafs_database_gdbm.so.0.0.0
+%{_libdir}/libgnunetafs_database_gdbm.la
+%{_libdir}/libgnunetafs_database_gdbm.so
+%{_libdir}/libgnunetafs_database_gdbm.so.0
+%attr(755,root,root) %{_libdir}/libgnunetafs_database_gdbm.so.0.0.0
 %{_libdir}/libgnunetafs_database_directory.la
 %{_libdir}/libgnunetafs_database_directory.so
 %{_libdir}/libgnunetafs_database_directory.so.0
@@ -223,6 +246,10 @@ fi
 %{_libdir}/libgnunettransport_smtp.so
 %{_libdir}/libgnunettransport_smtp.so.0
 %attr(755,root,root) %{_libdir}/libgnunettransport_smtp.so.0.0.0
+%{_libdir}/libgnunettransport_http.la
+%{_libdir}/libgnunettransport_http.so
+%{_libdir}/libgnunettransport_http.so.0
+%attr(755,root,root) %{_libdir}/libgnunettransport_http.so.0.0.0
 %{_libdir}/libgnunettransport_tcp.la
 %{_libdir}/libgnunettransport_tcp.so
 %{_libdir}/libgnunettransport_tcp.so.0
@@ -254,8 +281,10 @@ fi
 %doc %{_mandir}/man1/gnunet-tracekit.1.gz
 %doc %{_mandir}/man1/gnunet-stats.1.gz
 %doc %{_mandir}/man1/gnunet-peer-info.1.gz
-%attr(750,gnunet,gnunet) %dir %{_gnunethomedir}
-%attr(750,gnunet,gnunet) %dir %{_gnunethomedir}/data/hosts
+%attr(2770,gnunet,gnunet) %dir %{_gnunethomedir}
+%attr(2770,gnunet,gnunet) %dir %{_gnunethomedir}/afs
+%attr(2770,gnunet,gnunet) %dir %{_gnunethomedir}/data
+%attr(2770,gnunet,gnunet) %dir %{_gnunethomedir}/data/hosts
 
 %files mysql
 %defattr(644,root,root,755)
