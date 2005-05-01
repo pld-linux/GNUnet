@@ -27,7 +27,7 @@ BuildRequires:	libltdl-devel
 BuildRequires:	libtool >= 1:1.4.2-9
 BuildRequires:	mysql-devel >= 3.23.56
 BuildRequires:	openssl-devel >= 0.9.7d
-BuildRequires:	rpmbuild(macros) >= 1.159
+BuildRequires:	rpmbuild(macros) >= 1.202
 BuildRequires:	tdb-devel
 PreReq:		rc-scripts
 Requires(pre):	/bin/id
@@ -205,29 +205,14 @@ rm -f $RPM_BUILD_ROOT%{_libdir}/{libgnunetutil,libgnunet_afs_esed2,libgnunetdht_
 rm -rf $RPM_BUILD_ROOT
 
 %pre
-if [ -n "`/usr/bin/getgid gnunet`" ]; then
-	if [ "`/usr/bin/getgid gnunet`" != 115 ]; then
-		echo "Error: group gnunet doesn't have gid=115. Correct this before installing GNUnet." 1>&2
-		exit 1
-	fi
-else
-	/usr/sbin/groupadd -g 115 gnunet 1>&2
-fi
-if [ -n "`/bin/id -u gnunet 2>/dev/null`" ]; then
-	if [ "`/bin/id -u gnunet`" != 115 ]; then
-		echo "Error: user gnunet doesn't have uid=115. Correct this before installing GNUnet." 1>&2
-		exit 1
-	fi
-else
-	/usr/sbin/useradd -o -u 115 -d /var/lib/GNUnet -s /bin/sh -g gnunet \
-		-c "GNUnet daemon" gnunet 1>&2
-fi
+%groupadd -g 115 gnunet
+%useradd -o -u 115 -d /var/lib/GNUnet -s /bin/sh -g gnunet -c "GNUnet daemon" gnunet
 
 %post
 /sbin/ldconfig
 /sbin/chkconfig --add gnunet
 if [ -f /var/lock/subsys/gnunet ]; then
-	 /etc/rc.d/init.d/gnunet restart >&2
+	/etc/rc.d/init.d/gnunet restart >&2
 else
 	echo "Run \"/etc/rc.d/init.d/gnunet start\" to start GNUnet." >&2
 fi
