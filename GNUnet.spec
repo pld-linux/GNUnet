@@ -85,8 +85,8 @@ GNUnet stanowi czê¶æ projektu GNU (http://www.gnu.org/).
 
 Podczas gdy wspó³dzielenie plików za pomoc± GNUnet zapewnia
 u¿ytkownikom anonimowo¶æ, umo¿liwia ono równie¿ ewidencjonowanie dla
-zapewnienia lepszego gospodarowania zasobami. U¿ytkownicy wnosz±cy
-co¶ s± nagradzani lepsz± jako¶ci± us³ugi. Ka¿dy z równorzêdnych
+zapewnienia lepszego gospodarowania zasobami. U¿ytkownicy wnosz±cy co¶
+s± nagradzani lepsz± jako¶ci± us³ugi. Ka¿dy z równorzêdnych
 u¿ytkowników monitoruje zachowanie pozosta³ych i przydziela zasoby
 u¿ytkownikom, którzy s± ekonomicznie wiarygodni. Kodowanie tre¶ci
 czyni system nagród trudnym do przechytrzenia.
@@ -114,6 +114,7 @@ tdb znajduj± siê w osobnych podpakietach.
 Summary:	BerkeleyDB database support for GNUnet
 Summary(pl):	Obs³uga bazy BerkeleyDB dla GNUnet
 Group:		Applications/Network
+######		Unknown group!
 Requires:	%{name} = %{version}-%{release}
 
 %description bdb
@@ -126,6 +127,7 @@ Pakiet ten zawiera interfejs bazy danych BerkeleyDB dla GNUnet.
 Summary:	GDBM database support for GNUnet
 Summary(pl):	Obs³uga bazy GDBM dla GNUnet
 Group:		Applications/Network
+######		Unknown group!
 Requires:	%{name} = %{version}-%{release}
 
 %description gdbm
@@ -138,6 +140,7 @@ Pakiet ten zawiera interfejs bazy danych GDBM dla GNUnet.
 Summary:	MySQL database support for GNUnet
 Summary(pl):	Obs³uga bazy MySQL dla GNUnet
 Group:		Applications/Network
+######		Unknown group!
 Requires:	%{name} = %{version}-%{release}
 Requires:	mysql-libs >= 3.23.56
 
@@ -151,6 +154,7 @@ Pakiet ten zawiera interfejs bazy danych MySQL dla GNUnet.
 Summary:	TDB database support for GNUnet
 Summary(pl):	Obs³uga bazy TDB dla GNUnet
 Group:		Applications/Network
+######		Unknown group!
 Requires:	%{name} = %{version}-%{release}
 
 %description tdb
@@ -297,7 +301,7 @@ fi
 %{_libdir}/libgnunettransport_udp6.la
 %endif
 
-%attr(640,root,root) %config(noreplace) %verify(not md5 size mtime) %{_sysconfdir}/gnunet.conf
+%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/gnunet.conf
 %{_sysconfdir}/skel/.gnunet
 %attr(754,root,root) /etc/rc.d/init.d/gnunet
 %{_mandir}/man1/gnunet-chat.1*
