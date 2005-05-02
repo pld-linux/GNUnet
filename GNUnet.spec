@@ -113,8 +113,7 @@ tdb znajduj± siê w osobnych podpakietach.
 %package bdb
 Summary:	BerkeleyDB database support for GNUnet
 Summary(pl):	Obs³uga bazy BerkeleyDB dla GNUnet
-Group:		Applications/Network
-######		Unknown group!
+Group:		Applications/Networking
 Requires:	%{name} = %{version}-%{release}
 
 %description bdb
@@ -126,8 +125,7 @@ Pakiet ten zawiera interfejs bazy danych BerkeleyDB dla GNUnet.
 %package gdbm
 Summary:	GDBM database support for GNUnet
 Summary(pl):	Obs³uga bazy GDBM dla GNUnet
-Group:		Applications/Network
-######		Unknown group!
+Group:		Applications/Networking
 Requires:	%{name} = %{version}-%{release}
 
 %description gdbm
@@ -139,8 +137,7 @@ Pakiet ten zawiera interfejs bazy danych GDBM dla GNUnet.
 %package mysql
 Summary:	MySQL database support for GNUnet
 Summary(pl):	Obs³uga bazy MySQL dla GNUnet
-Group:		Applications/Network
-######		Unknown group!
+Group:		Applications/Networking
 Requires:	%{name} = %{version}-%{release}
 Requires:	mysql-libs >= 3.23.56
 
@@ -153,8 +150,7 @@ Pakiet ten zawiera interfejs bazy danych MySQL dla GNUnet.
 %package tdb
 Summary:	TDB database support for GNUnet
 Summary(pl):	Obs³uga bazy TDB dla GNUnet
-Group:		Applications/Network
-######		Unknown group!
+Group:		Applications/Networking
 Requires:	%{name} = %{version}-%{release}
 
 %description tdb
