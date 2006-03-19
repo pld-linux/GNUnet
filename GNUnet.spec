@@ -7,8 +7,8 @@ Summary(pl):	Anonimowa, rozproszona, bezpieczna sieæ
 Name:		GNUnet
 Version:	0.6.5
 Release:	0.1
-Group:		Applications/Networking
 License:	GPL
+Group:		Applications/Networking
 Source0:	http://www.ovmj.org/GNUnet/download/%{name}-%{version}.tar.bz2
 # Source0-md5:	8bca32b55dccdb5bde7bd2b38df9df03
 Source1:	gnunet.init
@@ -27,31 +27,31 @@ BuildRequires:	libltdl-devel
 BuildRequires:	libtool >= 1:1.4.2-9
 BuildRequires:	mysql-devel >= 3.23.56
 BuildRequires:	openssl-devel >= 0.9.7d
-BuildRequires:	rpmbuild(macros) >= 1.202
+BuildRequires:	rpmbuild(macros) >= 1.268
 BuildRequires:	tdb-devel
-PreReq:		rc-scripts
+Requires(post,postun):	/sbin/ldconfig
+Requires(post,preun):	/sbin/chkconfig
+Requires(postun):	/usr/sbin/groupdel
+Requires(postun):	/usr/sbin/userdel
 Requires(pre):	/bin/id
 Requires(pre):	/usr/bin/getgid
 Requires(pre):	/usr/sbin/groupadd
 Requires(pre):	/usr/sbin/useradd
-Requires(postun):	/usr/sbin/groupdel
-Requires(postun):	/usr/sbin/userdel
-Requires(post,postun):	/sbin/ldconfig
-Requires(post,preun):	/sbin/chkconfig
 Requires:	gdbm
 Requires:	gtk+ >= 1.2
 Requires:	libextractor >= 0.3.10
 Requires:	openssl >= 0.9.7d
+Requires:	rc-scripts
 Provides:	group(gnunet)
 Provides:	user(gnunet)
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
-%define	_gnunethomedir	/var/lib/GNUnet
+%define		_gnunethomedir	/var/lib/GNUnet
 
 %description
 GNUnet is framework for secure peer-to-peer networking. The primary
 application for GNUnet is anonymous file-sharing. GNUnet is part of
-the GNU project (http://www.gnu.org/).
+the GNU project <http://www.gnu.org/>.
 
 While GNUnet file-sharing provides anonymity for its users, it also
 provides accounting to perform better resource allocation.
@@ -72,8 +72,7 @@ anonymity may be limited due to the small number of active
 participants.
 
 For a more detailed description of GNUnet, see our webpages at:
-
-http://www.gnu.org/software/GNUnet/ and http://www.ovmj.org/GNUnet/
+<http://www.gnu.org/software/GNUnet/> and <http://www.ovmj.org/GNUnet/>
 
 Note that this RPM contains only plain directories database frontend;
 bdb, gdbm, mysql and tdb frontends are in separate subpackages.
@@ -103,8 +102,7 @@ miejscu, lecz nale¿y zauwa¿yæ, ¿e anonimowo¶æ mo¿e byæ ograniczona ze
 wzglêdu na ma³± liczbê aktywnych uczestników.
 
 Bardziej szczegó³owy opis GNUnet mo¿na znale¼æ na stronie:
-
-http://www.gnu.org/software/GNUnet/ i http://www.ovmj.org/GNUnet/
+<http://www.gnu.org/software/GNUnet/> i <http://www.ovmj.org/GNUnet/>
 
 Nale¿y te¿ zauwa¿yæ, ¿e ten pakiet zawiera tylko interfejs bazodanowy
 dla zwyk³ych katalogów; wtyczki obs³uguj±ce bazy bdb, gdbm, mysql i
@@ -211,17 +209,13 @@ rm -rf $RPM_BUILD_ROOT
 %post
 /sbin/ldconfig
 /sbin/chkconfig --add gnunet
-if [ -f /var/lock/subsys/gnunet ]; then
-	/etc/rc.d/init.d/gnunet restart >&2
-else
-	echo "Run \"/etc/rc.d/init.d/gnunet start\" to start GNUnet." >&2
-fi
+%service gnunet restart "GNUnet"
 
 %preun
-if [ -f /var/lock/subsys/gnunet ]; then
-	/etc/rc.d/init.d/gnunet stop
+if [ "$1" = 0 ]; then
+	%service gnunet stop
+	/sbin/chkconfig --del gnunet
 fi
-/sbin/chkconfig --del gnunet
 
 %postun
 /sbin/ldconfig
@@ -298,7 +292,7 @@ fi
 %endif
 
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/gnunet.conf
-%{_sysconfdir}/skel/.gnunet
+/etc/skel/.gnunet
 %attr(754,root,root) /etc/rc.d/init.d/gnunet
 %{_mandir}/man1/gnunet-chat.1*
 %{_mandir}/man1/gnunet-check.1*
