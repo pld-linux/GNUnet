@@ -3,7 +3,7 @@
 %bcond_without	ipv6	# without IPv6 support
 #
 Summary:	An anonymous distributed secure network
-Summary(pl):	Anonimowa, rozproszona, bezpieczna sieæ
+Summary(pl.UTF-8):   Anonimowa, rozproszona, bezpieczna sieÄ‡
 Name:		GNUnet
 Version:	0.6.5
 Release:	0.1
@@ -77,64 +77,64 @@ For a more detailed description of GNUnet, see our webpages at:
 Note that this RPM contains only plain directories database frontend;
 bdb, gdbm, mysql and tdb frontends are in separate subpackages.
 
-%description -l pl
+%description -l pl.UTF-8
 GNUnet stanowi szkielet bezpiecznej sieci typu peer-to-peer.
-Podstawow± aplikacj± GNUnet jest anonimowe wspó³dzielenie plików.
-GNUnet stanowi czê¶æ projektu GNU (http://www.gnu.org/).
+PodstawowÄ… aplikacjÄ… GNUnet jest anonimowe wspÃ³Å‚dzielenie plikÃ³w.
+GNUnet stanowi czÄ™Å›Ä‡ projektu GNU (http://www.gnu.org/).
 
-Podczas gdy wspó³dzielenie plików za pomoc± GNUnet zapewnia
-u¿ytkownikom anonimowo¶æ, umo¿liwia ono równie¿ ewidencjonowanie dla
-zapewnienia lepszego gospodarowania zasobami. U¿ytkownicy wnosz±cy co¶
-s± nagradzani lepsz± jako¶ci± us³ugi. Ka¿dy z równorzêdnych
-u¿ytkowników monitoruje zachowanie pozosta³ych i przydziela zasoby
-u¿ytkownikom, którzy s± ekonomicznie wiarygodni. Kodowanie tre¶ci
-czyni system nagród trudnym do przechytrzenia.
+Podczas gdy wspÃ³Å‚dzielenie plikÃ³w za pomocÄ… GNUnet zapewnia
+uÅ¼ytkownikom anonimowoÅ›Ä‡, umoÅ¼liwia ono rÃ³wnieÅ¼ ewidencjonowanie dla
+zapewnienia lepszego gospodarowania zasobami. UÅ¼ytkownicy wnoszÄ…cy coÅ›
+sÄ… nagradzani lepszÄ… jakoÅ›ciÄ… usÅ‚ugi. KaÅ¼dy z rÃ³wnorzÄ™dnych
+uÅ¼ytkownikÃ³w monitoruje zachowanie pozostaÅ‚ych i przydziela zasoby
+uÅ¼ytkownikom, ktÃ³rzy sÄ… ekonomicznie wiarygodni. Kodowanie treÅ›ci
+czyni system nagrÃ³d trudnym do przechytrzenia.
 
-GNUnet wspiera wiele protoko³ów transportowych, aktualnie: UDP, TCP i
-SMTP. Szkielet automatycznie wybiera tani± metodê transportu dostêpn±
-w danej chwili dla obu u¿ytkowników przy dowolnym po³±czeniu. GNUnet
-mo¿e dzia³aæ pomiêdzy dwiema maszynami znajduj±cymi siê za NAT i z
+GNUnet wspiera wiele protokoÅ‚Ã³w transportowych, aktualnie: UDP, TCP i
+SMTP. Szkielet automatycznie wybiera taniÄ… metodÄ™ transportu dostÄ™pnÄ…
+w danej chwili dla obu uÅ¼ytkownikÃ³w przy dowolnym poÅ‚Ä…czeniu. GNUnet
+moÅ¼e dziaÅ‚aÄ‡ pomiÄ™dzy dwiema maszynami znajdujÄ…cymi siÄ™ za NAT i z
 prawie wszystkimi konfiguracjami firewalli.
 
-Jest to wersja beta. Najwa¿niejsze funkcje zosta³y zaimplementowane i
-przetestowane. Funkcje zapewniaj±ce bezpieczeñstwo s± na swoim
-miejscu, lecz nale¿y zauwa¿yæ, ¿e anonimowo¶æ mo¿e byæ ograniczona ze
-wzglêdu na ma³± liczbê aktywnych uczestników.
+Jest to wersja beta. NajwaÅ¼niejsze funkcje zostaÅ‚y zaimplementowane i
+przetestowane. Funkcje zapewniajÄ…ce bezpieczeÅ„stwo sÄ… na swoim
+miejscu, lecz naleÅ¼y zauwaÅ¼yÄ‡, Å¼e anonimowoÅ›Ä‡ moÅ¼e byÄ‡ ograniczona ze
+wzglÄ™du na maÅ‚Ä… liczbÄ™ aktywnych uczestnikÃ³w.
 
-Bardziej szczegó³owy opis GNUnet mo¿na znale¼æ na stronie:
+Bardziej szczegÃ³Å‚owy opis GNUnet moÅ¼na znaleÅºÄ‡ na stronie:
 <http://www.gnu.org/software/GNUnet/> i <http://www.ovmj.org/GNUnet/>
 
-Nale¿y te¿ zauwa¿yæ, ¿e ten pakiet zawiera tylko interfejs bazodanowy
-dla zwyk³ych katalogów; wtyczki obs³uguj±ce bazy bdb, gdbm, mysql i
-tdb znajduj± siê w osobnych podpakietach.
+NaleÅ¼y teÅ¼ zauwaÅ¼yÄ‡, Å¼e ten pakiet zawiera tylko interfejs bazodanowy
+dla zwykÅ‚ych katalogÃ³w; wtyczki obsÅ‚ugujÄ…ce bazy bdb, gdbm, mysql i
+tdb znajdujÄ… siÄ™ w osobnych podpakietach.
 
 %package bdb
 Summary:	BerkeleyDB database support for GNUnet
-Summary(pl):	Obs³uga bazy BerkeleyDB dla GNUnet
+Summary(pl.UTF-8):   ObsÅ‚uga bazy BerkeleyDB dla GNUnet
 Group:		Applications/Networking
 Requires:	%{name} = %{version}-%{release}
 
 %description bdb
 This package contains BerkeleyDB database frontend for GNUnet.
 
-%description bdb -l pl
+%description bdb -l pl.UTF-8
 Pakiet ten zawiera interfejs bazy danych BerkeleyDB dla GNUnet.
 
 %package gdbm
 Summary:	GDBM database support for GNUnet
-Summary(pl):	Obs³uga bazy GDBM dla GNUnet
+Summary(pl.UTF-8):   ObsÅ‚uga bazy GDBM dla GNUnet
 Group:		Applications/Networking
 Requires:	%{name} = %{version}-%{release}
 
 %description gdbm
 This package contains GDBM database frontend for GNUnet.
 
-%description gdbm -l pl
+%description gdbm -l pl.UTF-8
 Pakiet ten zawiera interfejs bazy danych GDBM dla GNUnet.
 
 %package mysql
 Summary:	MySQL database support for GNUnet
-Summary(pl):	Obs³uga bazy MySQL dla GNUnet
+Summary(pl.UTF-8):   ObsÅ‚uga bazy MySQL dla GNUnet
 Group:		Applications/Networking
 Requires:	%{name} = %{version}-%{release}
 Requires:	mysql-libs >= 3.23.56
@@ -142,19 +142,19 @@ Requires:	mysql-libs >= 3.23.56
 %description mysql
 This package contains MySQL database frontend for GNUnet.
 
-%description mysql -l pl
+%description mysql -l pl.UTF-8
 Pakiet ten zawiera interfejs bazy danych MySQL dla GNUnet.
 
 %package tdb
 Summary:	TDB database support for GNUnet
-Summary(pl):	Obs³uga bazy TDB dla GNUnet
+Summary(pl.UTF-8):   ObsÅ‚uga bazy TDB dla GNUnet
 Group:		Applications/Networking
 Requires:	%{name} = %{version}-%{release}
 
 %description tdb
 This package contains TDB database frontend for GNUnet.
 
-%description tdb -l pl
+%description tdb -l pl.UTF-8
 Pakiet ten zawiera interfejs bazy danych TDB dla GNUnet.
 
 %prep
