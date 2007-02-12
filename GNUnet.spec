@@ -3,7 +3,7 @@
 %bcond_without	ipv6	# without IPv6 support
 #
 Summary:	An anonymous distributed secure network
-Summary(pl.UTF-8):   Anonimowa, rozproszona, bezpieczna sieć
+Summary(pl.UTF-8):	Anonimowa, rozproszona, bezpieczna sieć
 Name:		GNUnet
 Version:	0.6.5
 Release:	0.1
@@ -110,7 +110,7 @@ tdb znajdują się w osobnych podpakietach.
 
 %package bdb
 Summary:	BerkeleyDB database support for GNUnet
-Summary(pl.UTF-8):   Obsługa bazy BerkeleyDB dla GNUnet
+Summary(pl.UTF-8):	Obsługa bazy BerkeleyDB dla GNUnet
 Group:		Applications/Networking
 Requires:	%{name} = %{version}-%{release}
 
@@ -122,7 +122,7 @@ Pakiet ten zawiera interfejs bazy danych BerkeleyDB dla GNUnet.
 
 %package gdbm
 Summary:	GDBM database support for GNUnet
-Summary(pl.UTF-8):   Obsługa bazy GDBM dla GNUnet
+Summary(pl.UTF-8):	Obsługa bazy GDBM dla GNUnet
 Group:		Applications/Networking
 Requires:	%{name} = %{version}-%{release}
 
@@ -134,7 +134,7 @@ Pakiet ten zawiera interfejs bazy danych GDBM dla GNUnet.
 
 %package mysql
 Summary:	MySQL database support for GNUnet
-Summary(pl.UTF-8):   Obsługa bazy MySQL dla GNUnet
+Summary(pl.UTF-8):	Obsługa bazy MySQL dla GNUnet
 Group:		Applications/Networking
 Requires:	%{name} = %{version}-%{release}
 Requires:	mysql-libs >= 3.23.56
@@ -147,7 +147,7 @@ Pakiet ten zawiera interfejs bazy danych MySQL dla GNUnet.
 
 %package tdb
 Summary:	TDB database support for GNUnet
-Summary(pl.UTF-8):   Obsługa bazy TDB dla GNUnet
+Summary(pl.UTF-8):	Obsługa bazy TDB dla GNUnet
 Group:		Applications/Networking
 Requires:	%{name} = %{version}-%{release}
 
