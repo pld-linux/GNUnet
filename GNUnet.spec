@@ -19,7 +19,7 @@ BuildRequires:	autoconf >= 2.57
 BuildRequires:	automake
 BuildRequires:	db-devel
 BuildRequires:	gdbm-devel
-BuildRequires:	gettext-devel
+BuildRequires:	gettext-tools
 BuildRequires:	gmp-devel >= 4.0.0
 BuildRequires:	gtk+2-devel >= 2:2.4
 BuildRequires:	libextractor-devel >= 0.3.10
