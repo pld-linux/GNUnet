@@ -159,7 +159,7 @@ Pakiet ten zawiera interfejs bazy danych TDB dla GNUnet.
 
 %prep
 %setup -q
-%patch0 -p1
+%patch -P0 -p1
 %{?with_ipv6:%patch1 -p1}
 
 %build
